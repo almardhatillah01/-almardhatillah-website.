@@ -1,17 +1,15 @@
-// Fade-in effect on page load
-document.addEventListener("DOMContentLoaded", function() {
-    document.body.classList.add("loaded");
-});
+document.addEventListener("DOMContentLoaded", function () {
+    let music = document.getElementById("background-music");
 
-// Smooth transition when clicking links
-document.querySelectorAll(".navbar a").forEach(link => {
-    link.addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent immediate navigation
-        const targetUrl = this.href;
+    // Try playing music automatically (Some browsers may block it)
+    let playPromise = music.play();
 
-        document.body.style.opacity = "0"; // Fade out
-        setTimeout(() => {
-            window.location.href = targetUrl; // Navigate after fade-out
-        }, 500); // Adjust timing to match transition
-    });
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            // If autoplay is blocked, wait for user interaction
+            document.body.addEventListener("click", function () {
+                music.play();
+            }, { once: true }); // Ensures it runs only once
+        });
+    }
 });
